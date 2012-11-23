@@ -15,10 +15,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////
-// Define this to enable debugging
-//#define BOOST_SPIRIT_QI_DEBUG
-
 #include "config.hpp"
 #include "function.hpp"
 #include "vm.hpp"
@@ -126,6 +122,7 @@ int main(int argc, char **argv)
     }
     else
     {
+        error_handler.dump_error_line(first);
         std::cout << "Parse failure\n";
     }
     return 0;

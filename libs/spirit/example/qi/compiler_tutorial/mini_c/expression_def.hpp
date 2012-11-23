@@ -124,7 +124,7 @@ namespace client { namespace parser
 
         unary_expr =
                 primary_expr
-            |   (unary_op > primary_expr)
+            |   (unary_op > unary_expr)
             ;
 
         primary_expr =
@@ -144,7 +144,7 @@ namespace client { namespace parser
         argument_list = -(expr % ',');
 
         identifier =
-                !keywords
+                !lexeme[keywords >> !(alnum | '_')]
             >>  raw[lexeme[(alpha | '_') >> *(alnum | '_')]]
             ;
 

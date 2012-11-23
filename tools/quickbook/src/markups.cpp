@@ -34,6 +34,7 @@ namespace quickbook
                 { block_tags::important, "<important>", "</important>" },
                 { block_tags::note, "<note>", "</note>" },
                 { block_tags::tip, "<tip>", "</tip>" },
+                { block_tags::block, "", "" },
                 { block_tags::ordered_list, "<orderedlist>", "</orderedlist>" },
                 { block_tags::itemized_list, "<itemizedlist>", "</itemizedlist>" },
                 { block_tags::hr, "<para/>", 0 },
@@ -54,7 +55,6 @@ namespace quickbook
                 { phrase_tags::strikethrough, "<emphasis role=\"strikethrough\">", "</emphasis>" },
                 { phrase_tags::quote, "<quote>", "</quote>" },
                 { phrase_tags::replaceable, "<replaceable>", "</replaceable>" },
-                { phrase_tags::footnote, "<footnote><para>", "</para></footnote>" },
                 { phrase_tags::escape, "<!--quickbook-escape-prefix-->", "<!--quickbook-escape-postfix-->" },
                 { phrase_tags::break_mark, "<sbr/>\n", 0 }
             };

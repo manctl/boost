@@ -80,6 +80,12 @@ Or you can create a new locale in one step
 and, for example, use it to imbue an input and output stringstream.
 ]
 
+[tip To just change an input or output stream, you can concisely write
+`cout.imbue (std::locale(std::locale(), new boost::math::nonfinite_num_put<char>));`
+or
+`cin.imbue (std::locale(std::locale(), new boost::math::nonfinite_num_get<char>));`
+]
+
 [nonfinite_facets_sstream_2]
 
 [h4 C++0X standard for output of infinity and NaN]
@@ -332,7 +338,7 @@ and also string representations used by other programming languages.
 [h5 signed_zero]
 
 If the `signed_zero` flag is used with `nonfinite_num_put`,
-then the facet will distinguish between positive and negative zero.
+then the facet will always distinguish between positive and negative zero.
 It will format positive zero as "0" or "+0" and negative zero as "-0".
 The string representation of positive zero can be controlled
 with the `showpos` and `noshowpos` manipulators.
@@ -341,6 +347,16 @@ The `signed_zero flag` has no effect with the input facet `nonfinite_num_get`.
 The input facet `nonfinite_num_get` always parses "0" and "+0"
 as positive zero and "-0" as negative zero,
 as do most implementations of `std::num_get`.
+
+[note If the `signed_zero` flag is not set (the default), then a negative zero value
+will be displayed on output in whatever way the platform normally handles it.
+For most platforms, this it will format positive zero as "0" or "+0" and negative zero as "-0".
+But setting the `signed_zero` flag may be more portable.]
+
+[tip A negative zero value can be portably produced using the changesign function
+`(changesign)(static_cast<ValType>(0))` where `ValType` is `float`, `double` or `long double`,
+ or a User-Defined floating-point type (UDT) provided that this UDT has a sign
+and that the changesign function is implemented.]
 
 [h5 trap_infinity]
 
@@ -354,6 +370,7 @@ Which bit is set is platform dependent.
 If the `trap_infinity` flag is used with `nonfinite_num_get`,
 then the facet will set the `fail bit` of the stream when an attempt is made
 to parse a string that represents positive or negative infinity.
+
 
 (See Design Rationale below for a discussion of this inconsistency.)
 
@@ -373,14 +390,18 @@ Same as `trap_infinity`, but positive and negative NaN are trapped instead.
 
 [h5 Use with lexical_cast]
 
-Without using a new locale that contains the nonfinite facets, `lexical_cast` is not portable
-(and often fails) if nonfinite values are found.
+[note From Boost 1.48, lexical_cast no longer uses stringstreams internally,
+and is now able to handle infinities and NaNs natively on most platforms.]
+
+Without using a new locale that contains the nonfinite facets,
+previous versions of `lexical_cast` using stringstream were not portable
+(and often failed) if nonfinite values are found.
 
 [nonfinite_facets_sstream_1]
 
 Although other examples imbue individual streams with the new locale,
 for the streams constructed inside lexical_cast,
-it is necesary to assign to a global locale.
+it was necesary to assign to a global locale.
 
   locale::global(new_locale);
 
@@ -391,6 +412,10 @@ it is necesary to assign to a global locale.
 
   string s = boost::lexical_cast<string>(numeric_limits<double>::infinity());
   assert(s == "inf");
+
+[warning If you use stringstream inside your functions,
+you may still need to use a global locale to handle nonfinites correctly.
+Or you need to imbue your stringstream with suitable get and put facets.]
 
 [warning You should be aware that the C++ specification does not explicitly require
 that input from decimal digits strings converts with rounding to the
@@ -487,6 +512,9 @@ Example [@../../../example/nonfinite_loopback_ok.cpp] shows loopback works OK.
 
 Example [@../../../example/nonfinite_num_facet.cpp] shows output and re-input
 of various finite and nonfinite values.
+
+A simple example of trapping nonfinite output is at
+[@../../../example/nonfinite_num_facet_trap.cpp nonfinite_num_facet_trap.cpp].
 
 A very basic example of using Boost.Archive is at
 [@../../../example/nonfinite_serialization_archives.cpp].

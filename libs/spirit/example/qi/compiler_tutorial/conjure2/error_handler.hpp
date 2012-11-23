@@ -32,14 +32,22 @@ namespace client
             What const& what,
             Iterator err_pos) const
         {
-            // retrieve underlying iterator from current token
-            BaseIterator err_pos_base = err_pos->matched().begin();
+            // retrieve underlying iterator from current token, err_pos points
+            // to the last validly matched token, so we use its end iterator 
+            // as the error position
+            BaseIterator err_pos_base = err_pos->matched().end();
+            std::cout << message << what << std::endl;
+            if (err_pos_base != BaseIterator())
+                dump_error_line(err_pos_base);
+        }
 
+        void dump_error_line(BaseIterator err_pos_base) const
+        {
             int line;
             BaseIterator line_start = get_pos(err_pos_base, line);
             if (err_pos_base != last)
             {
-                std::cout << message << what << " line " << line << ':' << std::endl;
+                std::cout << " line " << line << ':' << std::endl;
                 std::cout << get_line(line_start) << std::endl;
                 for (; line_start != err_pos_base; ++line_start)
                     std::cout << ' ';
@@ -47,9 +55,9 @@ namespace client
             }
             else
             {
-                std::cout << "Unexpected end of file. ";
-                std::cout << message << what << " line " << line << std::endl;
+                std::cout << "Unexpected end of file.\n";
             }
+            
         }
 
         BaseIterator get_pos(BaseIterator err_pos, int& line) const

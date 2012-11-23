@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2006. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2006-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -129,7 +129,7 @@ bool test_named_iterators(ManagedMemory &m)
    const_named_iterator named_beg = m.named_begin();
    const_named_iterator named_end = m.named_end();
 
-   if(std::distance(named_beg, named_end) != (int)buffers.size()){
+   if((std::size_t)std::distance(named_beg, named_end) != (std::size_t)buffers.size()){
       return 1;
    }
 

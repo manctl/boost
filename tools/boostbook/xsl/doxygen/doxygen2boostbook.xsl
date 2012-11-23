@@ -484,10 +484,20 @@
           </xsl:if>
 
           <xsl:for-each select="param">
+            <xsl:variable name="name" select="defname/text()"/>
             <macro-parameter>
               <xsl:attribute name="name">
                 <xsl:value-of select="defname/text()"/>
               </xsl:attribute>
+              <xsl:variable name="params"
+                            select="../detaileddescription/para/parameterlist"/>
+              <xsl:variable name="description" select="$params/parameteritem/
+                            parameternamelist/parametername[text() = $name]/../../parameterdescription/para"/>
+              <xsl:if test="$description">
+                <description>
+                  <xsl:apply-templates select="$description" mode="passthrough"/>
+                </description>
+              </xsl:if>
             </macro-parameter>
           </xsl:for-each>
 
@@ -855,11 +865,22 @@
           <xsl:otherwise>
             <!-- We are in a class -->
             <!-- The name of the class we are in -->
-            <xsl:variable name="in-class">
+            <xsl:variable name="in-class-full">
               <xsl:call-template name="strip-qualifiers">
                 <xsl:with-param name="name" 
                   select="string(ancestor::compounddef/compoundname/text())"/>
               </xsl:call-template>
+            </xsl:variable>
+
+            <xsl:variable name ="in-class">
+              <xsl:choose>
+                <xsl:when test="contains($in-class-full, '&lt;')">
+                  <xsl:value-of select="substring-before($in-class-full, '&lt;')"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$in-class-full"/>
+                </xsl:otherwise>
+              </xsl:choose>
             </xsl:variable>
             
             <xsl:choose>
@@ -1170,6 +1191,10 @@
         </xsl:attribute>
       </xsl:if>
 
+      <xsl:if test="@explicit = 'yes'">
+        <xsl:attribute name="specifiers">explicit</xsl:attribute>
+      </xsl:if>
+
       <!-- Conversion type -->
       <type>
         <xsl:value-of select="substring-after(name/text(), 'operator ')"/>
@@ -1276,7 +1301,9 @@
                   not (@kind='return') and 
                   not (@kind='post') and
                   not (@kind='attention') and
-                  not (@kind='see')">
+                  not (@kind='see') and
+                  not (@kind='warning') 
+                  ">
       <xsl:apply-templates mode="passthrough"/>
     </xsl:if>
   </xsl:template>
@@ -1285,6 +1312,12 @@
     <note>
       <xsl:apply-templates mode="passthrough"/>
     </note>
+  </xsl:template>
+
+  <xsl:template match="para/simplesect[@kind='warning']" mode="passthrough">
+    <warning>
+      <xsl:apply-templates mode="passthrough"/>
+    </warning>
   </xsl:template>
 
   <xsl:template match="para/simplesect[@kind='par']" mode="passthrough">

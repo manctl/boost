@@ -84,6 +84,9 @@ int main ()
   // and create a NaN (NotANumber)
   double NaN = +std::numeric_limits<double>::quiet_NaN ();
 
+  double negated_NaN = (boost::math::changesign)(std::numeric_limits<double>::quiet_NaN ());
+
+
   // Output the nonfinite values using the current (default C) locale.
   // The default representations differ from system to system,
   // for example, using Microsoft compilers, 1.#INF, -1.#INF, and 1.#QNAN.
@@ -91,6 +94,9 @@ int main ()
   cout << "+std::numeric_limits<double>::infinity() = " << plus_infinity << endl;
   cout << "-std::numeric_limits<double>::infinity() = " << minus_infinity << endl;
   cout << "+std::numeric_limits<double>::quiet_NaN () = " << NaN << endl;
+
+  // Display negated NaN.
+  cout << "negated NaN " << negated_NaN << endl; // "-1.IND"
   
   // Create a new output locale, and add the nonfinite_num_put facet
   std::locale C99_out_locale (default_locale, new boost::math::nonfinite_num_put<char>);
@@ -106,6 +112,8 @@ int main ()
   cout << "-std::numeric_limits<double>::infinity() = " << minus_infinity << endl;
   cout << "+std::numeric_limits<double>::quiet_NaN () = " << NaN << endl;
 
+  // Display negated NaN.
+  cout << "negated NaN " << negated_NaN << endl; // -nan
 
   // Create a string with the expected C99 representation of plus infinity.
   std::string inf = "inf";
@@ -210,14 +218,14 @@ int main ()
   // Similarly if we can switch back to the default C locale.
   cout.imbue (default_locale);
   cout <<  "infinity in default C representation is " << plus_infinity << endl; 
-  cout <<  "infinity in default C representation (setw(" << width << ") is " << setw(width) << plus_infinity <<'|' << endl; 
-  cout <<  "infinity in default C representation (setw(" << width << ") is " << left << setw(width) << plus_infinity <<'|' << endl; 
-  cout <<  "infinity in default C representation (setw(" << width << ") is " << internal << setw(width) << plus_infinity <<'|' << endl; 
+  cout <<  "infinity in default C representation (setw(" << width << ") is |" << setw(width) << plus_infinity <<'|' << endl; 
+  cout <<  "infinity in default C representation (setw(" << width << ") is |" << left << setw(width) << plus_infinity <<'|' << endl; 
+  cout <<  "infinity in default C representation (setw(" << width << ") is |" << internal << setw(width) << plus_infinity <<'|' << endl; 
 
   cout.imbue (C99_out_locale);
-  cout << "infinity in C99 representation (setw(" << width << ") is " << right << setw(width) << plus_infinity <<'|'<< endl; 
-  cout << "infinity in C99 representation (setw(" << width << ") is " << left << setw(width) << plus_infinity <<'|'<< endl; 
-  cout << "infinity in C99 representation (setw(" << width << ") is " << internal << setw(width) << plus_infinity <<'|'<< endl; 
+  cout << "infinity in C99 representation (setw(" << width << ") is |" << right << setw(width) << plus_infinity <<'|'<< endl; 
+  cout << "infinity in C99 representation (setw(" << width << ") is |" << left << setw(width) << plus_infinity <<'|'<< endl; 
+  cout << "infinity in C99 representation (setw(" << width << ") is |" << internal << setw(width) << plus_infinity <<'|'<< endl; 
 
   return 0;
 } // int main()
