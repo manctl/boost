@@ -12,7 +12,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifdef OPT_BOEHM_GC
 
     /* Use Boehm GC memory allocator. */
-    #include <gc.h>
+    #include <stdlib.h>
+	#include <gc.h>
     #define bjam_malloc_x(s) memset(GC_malloc(s),0,s)
     #define bjam_malloc_atomic_x(s) memset(GC_malloc_atomic(s),0,s)
     #define bjam_calloc_x(n,s) memset(GC_malloc((n)*(s)),0,(n)*(s))

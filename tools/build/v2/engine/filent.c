@@ -79,7 +79,7 @@ void file_dirscan( OBJECT * dir, scanback func, void * closure )
         PATHNAME f;
         string filespec[ 1 ];
         string filename[ 1 ];
-        long handle;
+        intptr_t handle;
         int ret;
         struct _finddata_t finfo[ 1 ];
         LIST * files = L0;
